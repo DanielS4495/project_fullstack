@@ -83,7 +83,7 @@ The project includes integration tests that run against a real SQLite database (
 Run the tests using:
 
 ```bash
-npm test
+npx jest
 ```
 
 ## 🔌 API Endpoints
