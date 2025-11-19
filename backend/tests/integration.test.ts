@@ -43,4 +43,17 @@ describe('Integration Tests', () => {
       expect(habits[0].frequencyType).toBe('daily');
     }
   });
+  it('GET /habits - should return list of habits for user', async () => {
+    // First create a habit (relying on previous test or create manually)
+    // Then fetch:
+    const response = await request(app)
+      .get('/habits?phoneNumber=test-user-555');
+
+    expect(response.status).toBe(200);
+    expect(Array.isArray(response.body)).toBe(true);
+    // If run after the previous test, it should have at least 1 item
+    if (response.body.length > 0) {
+        expect(response.body[0]).toHaveProperty('habitName');
+    }
+  });
 });
