@@ -47,19 +47,45 @@ export const handlePrompt = async (req: Request, res: Response): Promise<void> =
         break;
 
       case 'delete':
-    //delete case
-      if (analysis.habit_name) {
-          await prisma.habit.updateMany({
-            where: { 
-                userId: user.id, 
-                habitName: { contains: analysis.habit_name } 
-            },
-            data: { status: 'deleted' },
+        if (analysis.habit_name) {
+          // 1. חיפוש מקדים - האם ההרגל בכלל קיים?
+          // אנחנו מחפשים הרגל ששייך למשתמש ומכיל את השם שה-AI זיהה
+          const habitsToDelete = await prisma.habit.findMany({
+            where: {
+              userId: user.id,
+              habitName: {
+                contains: analysis.habit_name, // חיפוש חלקי (למשל "water" ימצא את "drink water")
+              },
+              status: 'active' // רק הרגלים פעילים
+            }
           });
-          resultData = { message: `Deleted habits matching "${analysis.habit_name}"` };
+
+          if (habitsToDelete.length === 0) {
+            // לא נמצא הרגל כזה - מחזירים הודעה למשתמש במקום למחוק סתם
+            resultData = { 
+              success: false, 
+              message: `Could not find any active habit containing "${analysis.habit_name}" to delete.` 
+            };
+          } else {
+            // נמצאו הרגלים - מבצעים מחיקה
+            await prisma.habit.updateMany({
+              where: {
+                userId: user.id,
+                habitName: { contains: analysis.habit_name }
+              },
+              data: { status: 'deleted' },
+            });
+            
+            resultData = { 
+              success: true, 
+              message: `Successfully deleted ${habitsToDelete.length} habit(s) matching "${analysis.habit_name}"`,
+              deletedHabits: habitsToDelete.map(h => h.habitName)
+            };
+          }
+        } else {
+            resultData = { success: false, message: "AI identified deletion intent but couldn't capture the habit name." };
         }
         break;
-        
     }
 
     res.json({

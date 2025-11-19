@@ -1,7 +1,7 @@
 import app from './app';
 import dotenv from 'dotenv';
 
-dotenv.config();
+dotenv.config({ path: './.env' , override: true });
 
 const PORT = process.env.PORT || 3000;
 

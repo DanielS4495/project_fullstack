@@ -2,7 +2,6 @@ import OpenAI from 'openai';
 import dotenv from 'dotenv';
 
 dotenv.config();
-
 export interface AIAnalysisResult {
   action: 'create' | 'update' | 'delete' | 'list';
   habit_name?: string;
@@ -49,7 +48,7 @@ export const analyzeText = async (text: string): Promise<AIAnalysisResult> => {
 function mockAnalyze(text: string): AIAnalysisResult {
   const lowerText = text.toLowerCase();
 
-  // 1. DETECT "LIST" INTENT
+  // DETECT "LIST" INTENT
   // Keywords: show, list, what are, my habits
   if (
     lowerText.includes('list') || 
@@ -60,7 +59,7 @@ function mockAnalyze(text: string): AIAnalysisResult {
     return { action: 'list' };
   }
 
-  // 2. DETECT "DELETE" INTENT
+  // DETECT "DELETE" INTENT
   // Keywords: delete, remove, stop, cancel
   if (
     lowerText.includes('delete') || 
@@ -79,7 +78,7 @@ function mockAnalyze(text: string): AIAnalysisResult {
     };
   }
 
-  // 3. DETECT "CREATE" (Default)
+  // DETECT "CREATE" (Default)
   // Try to extract frequency
   let frequencyType = 'daily'; // Default
   let frequencyTimes = 1;
