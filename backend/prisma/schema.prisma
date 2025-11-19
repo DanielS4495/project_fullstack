@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 3.1 Users Table [cite: 25]
+model User {
+  id           Int      @id @default(autoincrement()) // [cite: 26]
+  phoneNumber  String   @unique @map("phone_number")  // [cite: 27]
+  habits       Habit[]
+  
+  @@map("users")
+}
+
+// 3.2 Habits Table [cite: 28]
+model Habit {
+  id             Int      @id @default(autoincrement()) // [cite: 29]
+  userId         Int      @map("user_id")               // [cite: 30]
+  habitName      String   @map("habit_name")            // [cite: 31]
+  frequencyType  String   @map("frequency_type")        // [cite: 32] (e.g. "daily", "weekly")
+  frequencyTimes String   @map("frequency_times")       // [cite: 33] (JSON stored as string)
+  status         String   @default("active")            // [cite: 36]
+  createdAt      DateTime @default(now()) @map("created_at") // [cite: 34]
+  updatedAt      DateTime @updatedAt @map("updated_at")      // [cite: 35]
+
+  user           User     @relation(fields: [userId], references: [id])
+
+  @@map("habits")
+}
