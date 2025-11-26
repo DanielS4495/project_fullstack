@@ -40,7 +40,6 @@ npm install
 Create a `.env` file in the root directory based on the example below:
 
 ```env
-PORT=3000
 DATABASE_URL="file:./dev.db"
 OPENAI_API_KEY="your_openai_api_key_here"
 ```
