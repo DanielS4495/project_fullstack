@@ -3,7 +3,7 @@ import { analyzeText } from '../../src/services/openai.service';
 import { PrismaClient } from '@prisma/client';
 import { Request, Response } from 'express';
 
-// 1. Mock dependencies [cite: 91]
+// Mock dependencies
 jest.mock('../../src/services/openai.service');
 jest.mock('@prisma/client', () => {
   const mPrisma = {
@@ -36,7 +36,7 @@ describe('Unit Test: Habit Controller', () => {
     expect(jsonMock).toHaveBeenCalledWith({ error: 'Missing text or phoneNumber' });
   });
 
-  // Requirement: Check if parsing works (Mocked Service) [cite: 93]
+  // Requirement: Check if parsing works (Mocked Service)
   it('should call analyzeText and return success', async () => {
     req.body = { text: 'Drink water', phoneNumber: '123' };
     
